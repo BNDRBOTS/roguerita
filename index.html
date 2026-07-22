@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ROGUE RITA™ // ARCADE DIVISION — games that respect you enough to kill you</title>
+<style>
+  :root {
+    --cyan: #00f0ff;
+    --pink: #ff71ce;
+    --mint: #05ffa1;
+    --orange: #ffb347;
+    --purple: #b967ff;
+    --blue: #01cdfe;
+    --bg: #0f0b1a;
+    --bg2: #161224;
+    --ink-bg: #050505;
+    --ink: #f4f4f4;
+    --ink-cyan: #62f6ff;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: #eae6ff;
+    font-family: "Space Grotesk", "Courier New", monospace;
+    overflow-x: hidden;
+  }
+
+  ::selection { background: var(--pink); color: #17001a; }
+
+  /* scanline + noise film over everything */
+  body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background: repeating-linear-gradient(0deg, rgba(0,0,0,0.12) 0px, rgba(255,255,255,0.015) 2px, transparent 3px, transparent 5px);
+    pointer-events: none;
+    z-index: 999;
+    mix-blend-mode: overlay;
+    opacity: 0.35;
+  }
+
+  a { color: inherit; text-decoration: none; }
+
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 0 24px; }
+
+  /* ===== NAV ===== */
+  nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(15, 11, 26, 0.82);
+    backdrop-filter: blur(10px);
+    border-bottom: 1.5px solid rgba(0, 240, 255, 0.35);
+  }
+
+  .nav-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 14px 24px;
+    max-width: 1180px;
+    margin: 0 auto;
+  }
+
+  .logo {
+    font-weight: 900;
+    letter-spacing: 2px;
+    font-size: 1.15rem;
+    color: #fff;
+    white-space: nowrap;
+  }
+
+  .logo b { color: var(--pink); text-shadow: 0 0 14px rgba(255,113,206,0.6); }
+  .logo span { color: var(--mint); font-weight: 500; font-size: 0.8rem; letter-spacing: 3px; }
+
+  .nav-links { display: flex; gap: 22px; font-size: 0.85rem; font-weight: 700; letter-spacing: 1px; flex-wrap: wrap; }
+  .nav-links a { color: #b9b0d8; transition: color .15s; }
+  .nav-links a:hover { color: var(--cyan); text-shadow: 0 0 10px rgba(0,240,255,0.6); }
+
+  .nav-cta {
+    background: linear-gradient(90deg, var(--pink), var(--purple));
+    color: #17001a;
+    font-weight: 800;
+    padding: 15px 20px;
+    border-radius: 22px 6px 22px 6px;
+    font-size: 0.82rem;
+    letter-spacing: 1px;
+    box-shadow: 3px 3px 0 rgba(0,240,255,0.5);
+    transition: transform .12s;
+    white-space: nowrap;
+  }
+  .nav-cta:hover { transform: translate(-2px,-2px); box-shadow: 5px 5px 0 rgba(0,240,255,0.6); }
+
+  /* ===== HERO ===== */
+  header {
+    position: relative;
+    padding: 110px 0 130px;
+    overflow: hidden;
+    text-align: center;
+  }
+
+  .hero-grid {
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(transparent 60%, rgba(255,113,206,0.12)),
+      repeating-linear-gradient(90deg, rgba(0,240,255,0.07) 0 1px, transparent 1px 70px),
+      repeating-linear-gradient(0deg, rgba(0,240,255,0.07) 0 1px, transparent 1px 70px);
+    transform: perspective(500px) rotateX(28deg) scale(1.6);
+    transform-origin: bottom;
+    pointer-events: none;
+  }
+
+  .hero-sun {
+    position: absolute;
+    left: 50%;
+    bottom: -80px;
+    transform: translateX(-50%);
+    width: 420px;
+    height: 420px;
+    border-radius: 50%;
+    background: linear-gradient(#ff71ce, #ffb347);
+    opacity: 0.16;
+    filter: blur(6px);
+    pointer-events: none;
+  }
+
+  .badge {
+    display: inline-block;
+    border: 1.5px solid var(--mint);
+    color: var(--mint);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 3px;
+    padding: 6px 16px;
+    border-radius: 999px;
+    margin-bottom: 26px;
+    background: rgba(5,255,161,0.06);
+  }
+
+  h1 {
+    position: relative;
+    font-size: clamp(2.6rem, 7vw, 5.2rem);
+    font-weight: 900;
+    letter-spacing: 3px;
+    line-height: 1.02;
+    color: #fff;
+    text-shadow: 4px 4px 0 rgba(122,0,255,0.55), 0 0 40px rgba(255,113,206,0.35);
+  }
+
+  h1 .glitch { color: var(--pink); animation: flicker 4s infinite; }
+
+  @keyframes flicker {
+    0%, 92%, 96%, 100% { opacity: 1; }
+    93%, 95% { opacity: 0.4; text-shadow: -3px 0 var(--cyan), 3px 0 var(--pink); }
+  }
+
+  .hero-sub {
+    position: relative;
+    max-width: 640px;
+    margin: 26px auto 0;
+    color: #c6bde6;
+    font-size: 1.08rem;
+    line-height: 1.65;
+  }
+
+  .hero-sub b { color: var(--cyan); }
+
+  .hero-ctas { position: relative; margin-top: 40px; display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+
+  .btn-big {
+    display: inline-block;
+    padding: 16px 34px;
+    font-weight: 900;
+    letter-spacing: 2px;
+    font-size: 0.95rem;
+    border-radius: 32px 8px 32px 8px;
+    transition: transform .12s;
+  }
+
+  .btn-primary {
+    background: linear-gradient(90deg, var(--cyan), var(--mint));
+    color: #071018;
+    box-shadow: 4px 4px 0 rgba(255,113,206,0.65);
+  }
+
+  .btn-ghost {
+    border: 2px solid var(--pink);
+    color: var(--pink);
+    box-shadow: 4px 4px 0 rgba(0,240,255,0.35);
+  }
+
+  .btn-big:hover { transform: translate(-2px,-3px); }
+
+  .hero-ticker {
+    position: relative;
+    margin-top: 64px;
+    font-size: 0.74rem;
+    letter-spacing: 2px;
+    color: #8f84b8;
+  }
+
+  /* ===== SECTION SHELLS ===== */
+  section { padding: 96px 0; position: relative; }
+
+  .kicker {
+    color: var(--mint);
+    font-size: 0.74rem;
+    font-weight: 800;
+    letter-spacing: 4px;
+    margin-bottom: 14px;
+  }
+
+  h2 {
+    font-size: clamp(1.7rem, 4vw, 2.6rem);
+    font-weight: 900;
+    letter-spacing: 1.5px;
+    color: #fff;
+    margin-bottom: 14px;
+    text-shadow: 3px 3px 0 rgba(122,0,255,0.45);
+  }
+
+  .section-sub { color: #b6abda; max-width: 620px; line-height: 1.6; margin-bottom: 52px; }
+
+  /* ===== GAME CARDS ===== */
+  .games { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 26px; }
+
+  .game-card {
+    position: relative;
+    border-radius: 36px 10px 36px 10px;
+    padding: 30px 28px 28px;
+    background: var(--bg2);
+    border: 2px solid;
+    transition: transform .15s;
+    overflow: hidden;
+  }
+
+  .game-card:hover { transform: translateY(-6px); }
+
+  .game-card.v1 { border-color: var(--pink); box-shadow: 6px 6px 0 rgba(255,113,206,0.35); }
+  .game-card.v2 { border-color: var(--cyan); box-shadow: 6px 6px 0 rgba(0,240,255,0.35); }
+  .game-card.boss { background: var(--ink-bg); border-color: var(--ink); box-shadow: 6px 6px 0 rgba(98,246,255,0.4); }
+
+  .game-tag {
+    display: inline-block;
+    font-size: 0.66rem;
+    font-weight: 800;
+    letter-spacing: 2.5px;
+    padding: 5px 12px;
+    border-radius: 999px;
+    margin-bottom: 18px;
+  }
+
+  .v1 .game-tag { background: rgba(255,113,206,0.14); color: var(--pink); border: 1px solid var(--pink); }
+  .v2 .game-tag { background: rgba(0,240,255,0.12); color: var(--cyan); border: 1px solid var(--cyan); }
+  .boss .game-tag { background: rgba(98,246,255,0.1); color: var(--ink-cyan); border: 1px solid var(--ink-cyan); }
+
+  .game-card h3 { font-size: 1.45rem; font-weight: 900; letter-spacing: 1px; color: #fff; margin-bottom: 4px; }
+  .game-card .sub { font-size: 0.8rem; letter-spacing: 2px; color: #9c92c4; margin-bottom: 18px; }
+  .boss .sub { color: #9a9a9a; }
+
+  .game-card p { color: #c3b9e4; font-size: 0.94rem; line-height: 1.65; margin-bottom: 18px; }
+  .boss p { color: #cfcfcf; }
+
+  .feat-list { list-style: none; margin-bottom: 22px; }
+  .feat-list li { font-size: 0.85rem; color: #b0a5d6; padding: 5px 0 5px 22px; position: relative; line-height: 1.45; }
+  .boss .feat-list li { color: #bdbdbd; }
+  .feat-list li::before { content: "▸"; position: absolute; left: 0; }
+  .v1 .feat-list li::before { color: var(--pink); }
+  .v2 .feat-list li::before { color: var(--cyan); }
+  .boss .feat-list li::before { color: var(--ink-cyan); }
+
+  .ultra {
+    border-radius: 20px 6px 20px 6px;
+    padding: 14px 16px;
+    font-size: 0.84rem;
+    line-height: 1.5;
+    margin-bottom: 8px;
+  }
+  .ultra b { display: block; font-size: 0.72rem; letter-spacing: 2.5px; margin-bottom: 5px; }
+  .v1 .ultra { background: rgba(255,113,206,0.08); border: 1.5px dashed var(--pink); }
+  .v1 .ultra b { color: var(--pink); }
+  .v2 .ultra { background: rgba(0,240,255,0.07); border: 1.5px dashed var(--cyan); }
+  .v2 .ultra b { color: var(--cyan); }
+  .boss .ultra { background: rgba(98,246,255,0.06); border: 1.5px dashed var(--ink-cyan); color: #e8e8e8; }
+  .boss .ultra b { color: var(--ink-cyan); }
+
+  /* ===== FEATURES ===== */
+  .features-band { background: linear-gradient(180deg, var(--bg), #120c22 50%, var(--bg)); }
+
+  .features { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; }
+
+  .feature {
+    background: rgba(22, 18, 36, 0.8);
+    border: 1.5px solid rgba(185,103,255,0.4);
+    border-radius: 26px 8px 26px 8px;
+    padding: 24px 22px;
+  }
+
+  .feature .ico { font-size: 1.6rem; margin-bottom: 12px; filter: drop-shadow(0 0 10px rgba(0,240,255,0.5)); }
+  .feature h4 { color: #fff; font-size: 1.02rem; letter-spacing: 1px; margin-bottom: 8px; }
+  .feature p { color: #b0a5d6; font-size: 0.86rem; line-height: 1.6; }
+
+  /* ===== PRICING ===== */
+  .pricing { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 26px; align-items: stretch; }
+
+  .price-card {
+    background: var(--bg2);
+    border: 2px solid rgba(0,240,255,0.5);
+    border-radius: 36px 10px 36px 10px;
+    padding: 34px 28px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .price-card.hot {
+    border-color: var(--pink);
+    box-shadow: 0 0 0 3px rgba(255,113,206,0.25), 0 18px 40px rgba(255,113,206,0.18);
+    transform: scale(1.03);
+  }
+
+  .price-card h3 { color: #fff; font-size: 1.2rem; letter-spacing: 2px; }
+  .price-card .price { font-size: 2.6rem; font-weight: 900; color: var(--mint); margin: 14px 0 2px; }
+  .price-card .per { font-size: 0.74rem; color: #8f84b8; letter-spacing: 1.5px; margin-bottom: 22px; }
+
+  .price-card ul { list-style: none; flex: 1; margin-bottom: 26px; }
+  .price-card li { font-size: 0.87rem; color: #c3b9e4; padding: 6px 0 6px 24px; position: relative; line-height: 1.5; }
+  .price-card li::before { content: "✦"; position: absolute; left: 0; color: var(--orange); }
+  .price-card li.no { color: #6f6592; text-decoration: line-through; }
+  .price-card li.no::before { content: "✖"; color: #6f6592; }
+
+  .price-btn {
+    display: block;
+    text-align: center;
+    padding: 13px;
+    border-radius: 24px 6px 24px 6px;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+    font-size: 0.88rem;
+    border: 2px solid var(--cyan);
+    color: var(--cyan);
+    transition: all .15s;
+  }
+  .price-btn:hover { background: rgba(0,240,255,0.1); }
+  .hot .price-btn { background: linear-gradient(90deg, var(--pink), var(--purple)); border: none; color: #17001a; box-shadow: 3px 3px 0 rgba(0,240,255,0.5); }
+
+  .hot-tag {
+    position: absolute;
+    margin-top: -52px;
+    background: var(--orange);
+    color: #241300;
+    font-weight: 900;
+    font-size: 0.66rem;
+    letter-spacing: 2px;
+    padding: 5px 14px;
+    border-radius: 999px;
+    box-shadow: 2px 2px 0 rgba(255,113,206,0.7);
+  }
+
+  .fine-print { text-align: center; margin-top: 34px; font-size: 0.74rem; color: #776c9e; letter-spacing: 1px; }
+
+  /* ===== TESTIMONIALS ===== */
+  .quotes { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 22px; }
+
+  .quote {
+    background: rgba(22,18,36,0.85);
+    border-left: 4px solid var(--mint);
+    border-radius: 8px 26px 8px 26px;
+    padding: 24px 24px 20px;
+  }
+  .quote p { color: #d5cdf0; font-size: 0.95rem; line-height: 1.65; margin-bottom: 14px; }
+  .quote .who { color: var(--cyan); font-size: 0.78rem; letter-spacing: 1.5px; font-weight: 700; }
+  .quote .who span { color: #8f84b8; font-weight: 400; }
+
+  /* ===== FAQ ===== */
+  details {
+    background: var(--bg2);
+    border: 1.5px solid rgba(0,240,255,0.4);
+    border-radius: 22px 6px 22px 6px;
+    padding: 18px 22px;
+    margin-bottom: 14px;
+  }
+  summary { cursor: pointer; font-weight: 800; letter-spacing: 0.5px; color: #fff; font-size: 0.98rem; }
+  summary::marker { color: var(--pink); }
+  details p { margin-top: 12px; color: #b6abda; font-size: 0.9rem; line-height: 1.65; }
+
+  /* ===== FOOTER ===== */
+  footer {
+    border-top: 1.5px solid rgba(255,113,206,0.35);
+    padding: 50px 0 40px;
+    text-align: center;
+    background: #0b0814;
+  }
+  footer .logo { font-size: 1.3rem; margin-bottom: 12px; display: block; }
+  footer p { color: #776c9e; font-size: 0.78rem; letter-spacing: 1px; line-height: 1.8; }
+  footer .heart { color: var(--pink); }
+
+  .marquee {
+    overflow: hidden;
+    border-top: 1.5px solid rgba(5,255,161,0.4);
+    border-bottom: 1.5px solid rgba(5,255,161,0.4);
+    padding: 12px 0;
+    background: rgba(5,255,161,0.04);
+  }
+  .marquee-inner {
+    display: inline-block;
+    white-space: nowrap;
+    animation: scroll 28s linear infinite;
+    color: var(--mint);
+    font-size: 0.8rem;
+    letter-spacing: 3px;
+    font-weight: 700;
+  }
+  @keyframes scroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+  .play-btn {
+    display: block;
+    text-align: center;
+    margin-top: 22px;
+  }
+
+  @media (max-width: 720px) {
+    .nav-links { display: none; }
+    .logo span { display: none; }
+    .nav-inner { padding: 12px 16px; }
+    .nav-cta { padding: 15px 16px; font-size: 0.76rem; }
+    header { padding: 70px 0 90px; }
+    section { padding: 64px 0; }
+    .price-card.hot { transform: none; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a class="logo" href="#top">ROGUE <b>RITA™</b> <span>// ARCADE DIVISION</span></a>
+    <div class="nav-links">
+      <a href="#games">THE GAMES</a>
+      <a href="#features">WHY US</a>
+      <a href="#pricing">PRICING</a>
+      <a href="#quotes">VICTIMS</a>
+      <a href="#faq">FAQ</a>
+    </div>
+    <a class="nav-cta" href="#pricing">INSERT COIN</a>
+  </div>
+</nav>
+
+<header id="top">
+  <div class="hero-grid"></div>
+  <div class="hero-sun"></div>
+  <div class="wrap">
+    <div class="badge">EST. 2026 · ZERO INVESTORS · ZERO CHILL</div>
+    <h1>GAMES THAT RESPECT YOU ENOUGH TO <span class="glitch">KILL YOU</span></h1>
+    <p class="hero-sub">
+      Rogue Rita™ ships hand-jittered, single-file arcade games about a pentagon named
+      <b>Rita</b> who has never once been safe. No launcher. No 40GB day-one patch.
+      No login wall between you and dying beautifully. Just an HTML file and consequences.
+    </p>
+    <div class="hero-ctas">
+      <a class="btn-big btn-primary" href="#games">MEET THE ROSTER ▸</a>
+      <a class="btn-big btn-ghost" href="#pricing">PAY US (OPTIONAL)</a>
+    </div>
+    <div class="hero-ticker">RUNS IN A BROWSER · RUNS ON YOUR PHONE · RUNS FROM NOTHING</div>
+  </div>
+</header>
+
+<div class="marquee">
+  <div class="marquee-inner">
+    NO ACCOUNTS ✦ NO ADS ✦ NO LOOT BOXES ✦ NO BATTLE PASS ✦ NO KERNEL-LEVEL ANTICHEAT ✦ NO APOLOGIES ✦ ONE PENTAGON ✦ INFINITE REGRET ✦
+    NO ACCOUNTS ✦ NO ADS ✦ NO LOOT BOXES ✦ NO BATTLE PASS ✦ NO KERNEL-LEVEL ANTICHEAT ✦ NO APOLOGIES ✦ ONE PENTAGON ✦ INFINITE REGRET ✦
+  </div>
+</div>
+
+<section id="games">
+  <div class="wrap">
+    <div class="kicker">// THE ROSTER</div>
+    <h2>THREE GAMES. ONE RITA. ZERO HAND-HOLDING.</h2>
+    <p class="section-sub">Each one is a single HTML file. Double-click it like it's 1997 and you found something on a floppy disk you shouldn't have.</p>
+
+    <div class="games">
+      <div class="game-card v1">
+        <span class="game-tag">THE ORIGINAL · SILENT CUT</span>
+        <h3>VAPORWAVE V1</h3>
+        <div class="sub">"THE TAPE"</div>
+        <p>The quiet one. A neon grid, a gradient sun, and ten named waves of geometry that have decided you're the problem. No music. Your heartbeat is the soundtrack.</p>
+        <ul class="feat-list">
+          <li>5 enemy archetypes — drones, lunging darts, armored tanks, spiteful splitters</li>
+          <li>Combo multipliers that abandon you the second you slow down</li>
+          <li>Bullet time, screen shake, named wave title cards</li>
+        </ul>
+        <div class="ultra">
+          <b>◀◀ SIGNATURE: VHS REWIND</b>
+          Once per run, death gets vetoed. The tape scrubs 4 seconds backward — tracking bands, slice jitter, the works — and drops you off before your mistake. One rewind per tape. Choose your regret carefully.
+        </div>
+        <a class="btn-big btn-primary play-btn" href="games/RogueRita_VaporwaveV1.html">▶ INSERT TAPE</a>
+      </div>
+
+      <div class="game-card v2">
+        <span class="game-tag">THE SEQUEL · LOUD CUT</span>
+        <h3>VAPORWAVE v2</h3>
+        <div class="sub">"THE BROADCAST"</div>
+        <p>Same sunset, now wired to a synthesizer. Power-ups, shields, overdrive, triple shot — and a soundtrack with opinions about your performance.</p>
+        <ul class="feat-list">
+          <li>Full WebAudio synth rig — every hit, wave, and death has a voice</li>
+          <li>Power-up drops: TRIPLE / SHIELD / OVERDRIVE</li>
+          <li>Retina-sharp, notch-aware, phone-legal</li>
+        </ul>
+        <div class="ultra">
+          <b>🎹 SIGNATURE: RESONANCE ENGINE</b>
+          The soundtrack is generative and it's judging you. Hold a combo and layers join in — drums, bass, arp, full band. Drop the combo and the band walks out. Bullet time drags the whole mix underwater. You don't unlock the music. You earn it, per second.
+        </div>
+        <a class="btn-big btn-primary play-btn" href="games/RogueRita_v2_Vaporwave.html">▶ GO LIVE ON AIR</a>
+      </div>
+
+      <div class="game-card boss">
+        <span class="game-tag">THE FINALE · INK CUT</span>
+        <h3>CYBER-ARENA</h3>
+        <div class="sub">"BOSS PACK"</div>
+        <p>The art-house one. Black paper, white ink, one cyan accent reserved for things you may legally damage. One titan, four phases, telegraphed lasers, homing ink, shockwave rings.</p>
+        <ul class="feat-list">
+          <li>Sumi-e titan with shatterable armor, severable joints, one soft core</li>
+          <li>Hit-stop, phase title cards, integrity bar</li>
+          <li>Dash with real i-frames — double-tap on mobile</li>
+        </ul>
+        <div class="ultra">
+          <b>🖌 SIGNATURE: BRUSH PARRY</b>
+          Dash <i>through</i> a boss projectile and it switches sides — reborn as a white shard homing straight at the titan's weak point. Dodging keeps you alive. Parrying wins arguments.
+        </div>
+        <a class="btn-big btn-primary play-btn" href="games/RogueRita_CyberArena_BossPackV1.html">▶ FACE THE TITAN</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="features" class="features-band">
+  <div class="wrap">
+    <div class="kicker">// WHY ROGUE RITA</div>
+    <h2>A SAAS PITCH, EXCEPT THE PRODUCT IS PAIN</h2>
+    <p class="section-sub">Every studio says "player-first." We put the player first in the line of fire. Here's the platform pitch, translated from investor to human:</p>
+
+    <div class="features">
+      <div class="feature">
+        <div class="ico">💾</div>
+        <h4>ONE-FILE DEPLOYMENT</h4>
+        <p>Each game is a single HTML file. Email it. USB it. Carrier-pigeon it. It runs. Our "cloud infrastructure" is your Downloads folder.</p>
+      </div>
+      <div class="feature">
+        <div class="ico">🔊</div>
+        <h4>SYNTHS, NOT SAMPLES</h4>
+        <p>Every sound is generated live by an actual audio graph — oscillators, filters, noise buffers. Zero MP3s were harmed. Zero MP3s were even invited.</p>
+      </div>
+      <div class="feature">
+        <div class="ico">��️</div>
+        <h4>HAND-JITTERED EVERYTHING</h4>
+        <p>Every circle is drawn slightly wrong on purpose, every frame. It's called a design language. Ours just happens to have a tremor.</p>
+      </div>
+      <div class="feature">
+        <div class="ico">📵</div>
+        <h4>ANTI-DARK-PATTERN™</h4>
+        <p>No energy meters. No daily streaks guilt-tripping you at 11pm. No "watch an ad to continue." You die, you press R, that's the whole economy.</p>
+      </div>
+      <div class="feature">
+        <div class="ico">📱</div>
+        <h4>PHONE-GRADE, NOTCH-AWARE</h4>
+        <p>Safe-area insets, DPR scaling, double-tap dashes. Rita will humiliate you at retina resolution on the bus.</p>
+      </div>
+      <div class="feature">
+        <div class="ico">🏆</div>
+        <h4>LOCAL LEADERBOARDS</h4>
+        <p>Your best score is stored in localStorage, on your machine, where it belongs. The only person you're competing with is Tuesday-you. Tuesday-you was better.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="pricing">
+  <div class="wrap">
+    <div class="kicker">// PRICING</div>
+    <h2>THREE TIERS. ALL OF THEM ARE JOKES. ALL OF THEM WORK.</h2>
+    <p class="section-sub">The games are files. You already have them. This section exists because every SaaS site legally requires a pricing table, and we respect the law of the land.</p>
+
+    <div class="pricing">
+      <div class="price-card">
+        <h3>FREELOADER</h3>
+        <div class="price">$0</div>
+        <div class="per">FOREVER / NO CATCH / WE CHECKED</div>
+        <ul>
+          <li>All three games, fully unlocked</li>
+          <li>All signature features (rewind, resonance, parry)</li>
+          <li>Unlimited deaths</li>
+          <li>Our respect</li>
+          <li class="no">Our sympathy</li>
+        </ul>
+        <a class="price-btn" href="#games">START DYING ▸</a>
+      </div>
+
+      <div class="price-card hot">
+        <span class="hot-tag">MOST POPULAR (IT'S THE SAME)</span>
+        <h3>SYNTHLORD</h3>
+        <div class="price">$0</div>
+        <div class="per">PER MONTH / BILLED NEVER</div>
+        <ul>
+          <li>Everything in FREELOADER</li>
+          <li>The smug feeling of choosing the middle tier</li>
+          <li>Permission to call yourself a Synthlord</li>
+          <li>Same games. We cannot stress this enough</li>
+        </ul>
+        <a class="price-btn" href="#games">ASCEND ▸</a>
+      </div>
+
+      <div class="price-card">
+        <h3>TITAN SLAYER</h3>
+        <div class="price">$0</div>
+        <div class="per">PER YEAR / SAVE 100% ANNUALLY</div>
+        <ul>
+          <li>Everything in SYNTHLORD</li>
+          <li>Enterprise-grade nothing</li>
+          <li>Priority support (shouting at the sky)</li>
+          <li>A firm imaginary handshake</li>
+          <li class="no">SLA</li>
+        </ul>
+        <a class="price-btn" href="#games">GO CORPORATE ▸</a>
+      </div>
+    </div>
+
+    <p class="fine-print">* ALL TIERS INCLUDE THE FULL GAMES BECAUSE THEY'RE HTML FILES AND WE'RE NOT MONSTERS. THE TITAN IS THE MONSTER.</p>
+  </div>
+</section>
+
+<section id="quotes" class="features-band">
+  <div class="wrap">
+    <div class="kicker">// TESTIMONIALS</div>
+    <h2>WORDS FROM THE FALLEN</h2>
+    <p class="section-sub">Reviews collected from real emotional states. Names changed to protect the eliminated.</p>
+
+    <div class="quotes">
+      <div class="quote">
+        <p>"I used my VHS Rewind on wave 2 like an absolute amateur and then survived to wave 9 out of pure shame. Best game design I've ever been insulted by."</p>
+        <div class="who">CASSETTE_GHOST_88 <span>// wave 9, died proud</span></div>
+      </div>
+      <div class="quote">
+        <p>"The soundtrack literally stopped playing bass when my combo dropped. My own game gave me the silent treatment. 10/10, buying nothing again."</p>
+        <div class="who">MALL_WITCH <span>// synthlord tier, obviously</span></div>
+      </div>
+      <div class="quote">
+        <p>"I parried a laser volley back into the titan's crown and stood up from my chair. My cat left the room. Worth it."</p>
+        <div class="who">INKDASH_PROPHET <span>// titan dismantled, 1 attempt (lie)</span></div>
+      </div>
+      <div class="quote">
+        <p>"No account. No launcher. No 'your session has expired.' I just opened a file and got destroyed by a hexagon. This is what the internet was for."</p>
+        <div class="who">DIAL_UP_DEMON <span>// freeloader for life</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="faq">
+  <div class="wrap">
+    <div class="kicker">// FAQ</div>
+    <h2>QUESTIONS PEOPLE YELLED AT US</h2>
+    <p class="section-sub" style="margin-bottom:36px;">Answered calmly, which felt like a betrayal of the brand, but here we are.</p>
+
+    <details>
+      <summary>Is it really free?</summary>
+      <p>Yes. They're HTML files. Charging you would require building a checkout page, and we'd rather build another boss. Priorities.</p>
+    </details>
+    <details>
+      <summary>Why is Rita a pentagon?</summary>
+      <p>Circles are prey, squares are furniture, triangles are villains. Five sides is exactly enough edges to mean business without joining the enemy team. This is settled geometry.</p>
+    </details>
+    <details>
+      <summary>Why doesn't V1 or the Boss Pack have music?</summary>
+      <p>V1 is the quiet one — the silence is load-bearing. The Boss Pack is ink; ink doesn't need a soundtrack. If you want the band, v2 has an entire generative engine that only plays for winners. Go be a winner.</p>
+    </details>
+    <details>
+      <summary>Do my scores sync to the cloud?</summary>
+      <p>They sync to localStorage, also known as "your computer," also known as where your data should have been this whole time.</p>
+    </details>
+    <details>
+      <summary>Will there be more games?</summary>
+      <p>Rita has died approximately 40,000 times in QA and shows no signs of stopping. Draw your own conclusions.</p>
+    </details>
+    <details>
+      <summary>What's your roadmap?</summary>
+      <p>Forward, at 60 frames per second, with occasional hit-stop for dramatic effect.</p>
+    </details>
+  </div>
+</section>
+
+<footer>
+  <span class="logo">ROGUE <b>RITA™</b></span>
+  <p>
+    © 2026 ROGUE RITA ARCADE DIVISION · ALL WRONGS RESERVED<br>
+    MADE BY HUMANS WITH A GRUDGE <span class="heart">♥</span> POWERED BY CANVAS 2D AND SPITE<br>
+    RITA IS FINE. RITA IS ALWAYS FINE. STOP ASKING ABOUT RITA.
+  </p>
+</footer>
+
+</body>
+</html>
