@@ -1,0 +1,54 @@
+name: Apply Rogue Rita mobile fix
+
+on:
+  push:
+    branches: [v3]
+    paths:
+      - '.github/workflows/apply-rr-mobile-fix.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: v3
+      - name: Apply verified direct patch
+        run: python tools/rr_mobile_fix.py
+      - name: Validate JavaScript syntax
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re, subprocess, tempfile
+          for p in Path('games').glob('RogueRita_*.html'):
+              text=p.read_text()
+              scripts=re.findall(r'<script>(.*?)</script>', text, re.S)
+              if len(scripts)!=1:
+                  raise SystemExit(f'{p}: expected one inline script, got {len(scripts)}')
+              with tempfile.NamedTemporaryFile('w', suffix='.js', delete=False) as f:
+                  f.write(scripts[0]); name=f.name
+              subprocess.run(['node','--check',name], check=True)
+          PY
+      - name: Verify canonical structure
+        run: |
+          test -f index.html
+          test -f games/RogueRita_VaporwaveV1.html
+          test -f games/RogueRita_v2_Vaporwave.html
+          test -f games/RogueRita_CyberArena_BossPackV1.html
+          test ! -e games/mobile-play.html
+          test ! -e games/mobile.html
+          ! find games -name '*_core.html' | grep -q .
+          grep -q 'mobile-stick' games/RogueRita_VaporwaveV1.html
+          grep -q 'mobile-stick' games/RogueRita_v2_Vaporwave.html
+          grep -q 'mobile-stick' games/RogueRita_CyberArena_BossPackV1.html
+      - name: Commit canonical v3
+        run: |
+          git config user.name 'BNDRBOTS'
+          git config user.email 'bndrbots@gmail.com'
+          git rm -f tools/rr_mobile_fix.py .github/workflows/apply-rr-mobile-fix.yml
+          git add -A
+          git commit -m 'Finish direct mobile-ready Rogue Rita v3'
+          git push origin HEAD:v3
