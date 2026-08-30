@@ -2,7 +2,7 @@
 
 ROGUE RITA™ is a static browser arcade and storefront containing three self-contained Canvas 2D games. The repository has no build system, package manager, backend, database, framework, or bundled asset pipeline. The site and all three games run directly from HTML files.
 
-**Source snapshot documented here:** `main` at commit `c1496d944865ca3d80575e7cdc6de0e267d56575`.
+**Canonical release branch:** `v3`. GitHub Pages is deployed from `v3`.
 
 ## What is actually in this repository
 
@@ -27,9 +27,9 @@ The previous README listed a `.nojekyll` file, but that file is not present in t
 - `index.html` is the public landing page and storefront.
 - Every game is one self-contained HTML file under `games/`.
 - The three game cards on `index.html` link directly to those public HTML files.
-- All current pricing cards display `$0`.
-- All current purchase-style calls to action point to internal page sections, not Gumroad or another checkout.
-- No network requests, external scripts, external stylesheets, API calls, authentication, analytics, or payment integration are implemented.
+- The games remain fully playable at `$0`; the SYNTHLORD card is optional one-time support at a customer-chosen amount of `$1+`.
+- Optional support uses a live Stripe-hosted Payment Link: `https://buy.stripe.com/6oU4gz9cfcwG1FG4Qw0oM0x`.
+- The games themselves use no network requests, external scripts, authentication, analytics, or backend. Payment is handled externally by Stripe-hosted Checkout; no Stripe secret keys are present in the repository.
 - The CSS names `Space Grotesk`, but no font file or web-font import is included; browsers use it only when locally available, otherwise they fall back to `Courier New` or monospace.
 - Scores are stored only in browser `localStorage`.
 - No repository-level automated tests, build scripts, service worker, manifest, license file, or deployment workflow are included.
@@ -52,9 +52,9 @@ No installation or local server is required for the current code.
 
 | Game | File | Core structure | Signature system | Audio | Saved score key |
 |---|---|---|---|---|---|
-| **VAPORWAVE V1 — “THE TAPE”** | `games/RogueRita_VaporwaveV1.html` | Endless survival waves against five geometric enemy types | One VHS rewind per run | None | `rita_v1_best` |
+| **VAPORWAVE V1 — “THE TAPE”** | `games/RogueRita_VaporwaveV1.html` | Endless survival waves against five geometric enemy types | One VHS rewind per run | Generated lo-fi WebAudio tape deck | `rita_v1_best` |
 | **VAPORWAVE v2 — “THE BROADCAST”** | `games/RogueRita_v2_Vaporwave.html` | V1-style survival plus pickups and a responsive audio engine | Combo-gated Resonance Engine | Generated with WebAudio | `rita_v2_best` |
-| **CYBER-ARENA — “BOSS PACK”** | `games/RogueRita_CyberArena_BossPackV1.html` | One titan encounter: wardens, shell, joints, core | Dash-through-projectile Brush Parry | None | `rita_boss_best` |
+| **CYBER-ARENA — “BOSS PACK”** | `games/RogueRita_CyberArena_BossPackV1.html` | One titan encounter: wardens, shell, joints, core | Dash-through-projectile Brush Parry | Generated phase-driven WebAudio war drone | `rita_boss_best` |
 
 ## Controls
 
@@ -62,7 +62,8 @@ No installation or local server is required for the current code.
 
 - `W`, `A`, `S`, `D`: move
 - Mouse hold: aim and auto-fire
-- Touch hold/drag: aim and auto-fire
+- Touch: left virtual stick moves; drag the arena to aim and auto-fire
+- Touch: BULLET TIME button holds bullet time
 - `Space` hold: bullet time
 - `P`: pause/resume
 - `R` or tap after death: restart
@@ -81,7 +82,8 @@ No installation or local server is required for the current code.
 
 - `W`, `A`, `S`, `D`: move
 - Mouse hold: aim and auto-fire
-- Touch hold/drag: aim and auto-fire
+- Touch: left virtual stick moves; drag the arena to aim and auto-fire
+- Touch: DASH/PARRY button or double-tap to dash
 - `Space`: dash
 - Double-tap on touch: dash
 - `P`: pause/resume
@@ -99,7 +101,7 @@ Its only JavaScript is a decorative desktop mouse-follow effect for `.hero-sun`.
 - hero section
 - three playable game cards
 - feature grid
-- three `$0` pricing cards
+- two `$0` joke tiers plus one live `$1+` optional support tier
 - fictional testimonials
 - FAQ
 - footer
@@ -182,7 +184,7 @@ For this exact repository structure:
 1. Open the repository’s **Settings**.
 2. Open **Pages**.
 3. Choose **Deploy from a branch**.
-4. Select `main`.
+4. Select `v3`.
 5. Select `/ (root)`.
 6. Save.
 
@@ -192,18 +194,20 @@ The landing page uses only relative game paths, so no path rewrite is required.
 
 # Operator instruction sheet
 
-## 1. Decide what Gumroad is doing
+## 1. Current live monetization
 
-The current repository publicly exposes every complete game file. Anyone can open the three `/games/*.html` URLs without visiting Gumroad.
+ROGUE RITA currently uses **public/free play + optional one-time Stripe support**. The complete games remain public under `/games/`; payment does not gate access.
 
-Therefore:
+- Live support product: **ROGUE RITA™ Arcade Support**
+- Customer chooses any one-time amount from **$1 USD and up**
+- Checkout is Stripe-hosted; no secret keys or backend code are required
+- Live Payment Link: `https://buy.stripe.com/6oU4gz9cfcwG1FG4Qw0oM0x`
 
-- **Donation / pay-what-you-want mode:** keep the game files public and use Gumroad links as voluntary checkout/support links.
-- **Paid-access mode:** do not leave the full paid game files in this public Pages repository. Move the paid files to Gumroad delivery or a private distribution location, then replace the public play links with Gumroad product links or public demo links.
+If the business model later changes to paid-only access, do not leave the full paid HTML game files in this public Pages repository. Move paid deliverables to private fulfillment first, then replace public play links with demos or checkout links.
 
-Adding Gumroad URLs alone does **not** create access control.
+## 2. Optional future Gumroad distribution
 
-## 2. Prepare these exact URL values
+The Gumroad placeholders below are not required for the current live Stripe support flow. They are retained only as a future distribution option.
 
 Replace every placeholder below with your real URL:
 
