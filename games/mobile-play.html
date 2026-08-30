@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<title>ROGUE RITA // MOBILE PLAY</title>
+<style>
+:root{--sat:env(safe-area-inset-top,0px);--sab:env(safe-area-inset-bottom,0px);--sal:env(safe-area-inset-left,0px);--sar:env(safe-area-inset-right,0px);--cyan:#00f0ff;--pink:#ff71ce;--ink:#f4f4f4}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none}
+html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#050505;touch-action:none;overscroll-behavior:none}
+#game{position:absolute;left:var(--sal);right:var(--sar);top:var(--sat);bottom:var(--sab);width:calc(100% - var(--sal) - var(--sar));height:calc(100% - var(--sat) - var(--sab));border:0;background:#050505}
+#controls{position:fixed;inset:0;z-index:50;pointer-events:none;font-family:"Courier New",monospace;color:var(--cyan)}
+#pad{position:absolute;left:calc(18px + var(--sal));bottom:calc(18px + var(--sab));width:120px;height:120px;border-radius:50%;border:2px solid rgba(255,255,255,.48);background:rgba(0,0,0,.34);box-shadow:inset 0 0 28px rgba(255,255,255,.08),0 0 18px rgba(0,240,255,.18);pointer-events:auto;touch-action:none}
+#thumb{position:absolute;left:50%;top:50%;width:50px;height:50px;margin:-25px 0 0 -25px;border-radius:50%;background:rgba(255,255,255,.88);border:2px solid var(--cyan);box-shadow:0 0 18px var(--cyan);pointer-events:none}
+#actions{position:absolute;right:calc(18px + var(--sar));bottom:calc(18px + var(--sab));display:flex;flex-direction:column;align-items:flex-end;gap:12px;pointer-events:none}
+.action{min-width:78px;min-height:54px;padding:10px 12px;border:2px solid currentColor;border-radius:18px 6px 18px 6px;background:rgba(5,5,12,.86);color:var(--cyan);font:900 11px/1.15 "Courier New",monospace;letter-spacing:1px;box-shadow:3px 3px 0 rgba(255,113,206,.45);pointer-events:auto;touch-action:none}
+.action:active,.action.on{transform:translate(2px,2px);box-shadow:none}#pause{color:var(--ink)}#special.boss{color:#62f6ff}
+#label{position:absolute;left:50%;bottom:calc(8px + var(--sab));transform:translateX(-50%);padding:5px 10px;border-radius:999px;background:rgba(0,0,0,.45);font:700 9px/1 "Courier New",monospace;white-space:nowrap;pointer-events:none;opacity:.72}
+@media(orientation:portrait){#pad{width:112px;height:112px}#label{display:none}}
+</style>
+</head>
+<body>
+<iframe id="game" allow="autoplay; fullscreen" title="Rogue Rita game"></iframe>
+<div id="controls"><div id="pad"><div id="thumb"></div></div><div id="actions"><button class="action" id="pause" type="button">PAUSE</button><button class="action" id="special" type="button">BULLET<br>TIME</button></div><div id="label">LEFT STICK MOVE · DRAG ARENA TO FIRE</div></div>
+<script>
+(()=>{
+ const q=new URLSearchParams(location.search),core=q.get('core'),kind=q.get('kind')==='boss'?'boss':'bullet';
+ if(!core||!/^[A-Za-z0-9_.-]+$/.test(core)){document.body.textContent='GAME FILE MISSING';return}
+ const frame=document.getElementById('game'),pad=document.getElementById('pad'),thumb=document.getElementById('thumb'),pause=document.getElementById('pause'),special=document.getElementById('special');frame.src=core;
+ if(kind==='boss'){special.innerHTML='DASH<br>PARRY';special.classList.add('boss');document.getElementById('label').textContent='LEFT STICK MOVE · DRAG ARENA TO FIRE · DASH/PARRY'}
+ function win(){return frame.contentWindow}function send(key,type='keydown'){try{win().dispatchEvent(new KeyboardEvent(type,{key,bubbles:true,cancelable:true}))}catch(_){}}function tap(key){send(key);setTimeout(()=>send(key,'keyup'),45)}
+ frame.addEventListener('load',()=>{try{const d=frame.contentDocument,st=d.createElement('style');st.textContent='.stats-panel,.game-tagline,.controls-hint,.player-name,.top-hud{pointer-events:none!important}.mute-btn{pointer-events:auto!important}.controls-hint{display:none!important}';d.head.appendChild(st)}catch(_){}});
+ const down={w:false,a:false,s:false,d:false};function setKey(k,on){if(down[k]===on)return;down[k]=on;send(k,on?'keydown':'keyup')}function vector(x,y){const t=.3;setKey('a',x<-t);setKey('d',x>t);setKey('w',y<-t);setKey('s',y>t)}function release(){vector(0,0);thumb.style.transform='translate(0,0)'}
+ let pid=null;function move(e){if(e.pointerId!==pid)return;const r=pad.getBoundingClientRect(),m=r.width*.33;let dx=e.clientX-r.left-r.width/2,dy=e.clientY-r.top-r.height/2,L=Math.hypot(dx,dy);if(L>m){dx=dx/L*m;dy=dy/L*m}thumb.style.transform=`translate(${dx.toFixed(1)}px,${dy.toFixed(1)}px)`;vector(dx/m,dy/m)}
+ pad.addEventListener('pointerdown',e=>{e.preventDefault();e.stopPropagation();pid=e.pointerId;try{pad.setPointerCapture(pid)}catch(_){}move(e)});pad.addEventListener('pointermove',e=>{if(e.pointerId===pid){e.preventDefault();move(e)}});for(const ev of ['pointerup','pointercancel','lostpointercapture'])pad.addEventListener(ev,e=>{if(ev==='lostpointercapture'||e.pointerId===pid){pid=null;release()}});
+ pause.addEventListener('pointerdown',e=>{e.preventDefault();e.stopPropagation();tap('p')});
+ if(kind==='bullet'){let spid=null;special.addEventListener('pointerdown',e=>{e.preventDefault();e.stopPropagation();spid=e.pointerId;special.classList.add('on');send(' ','keydown');try{special.setPointerCapture(spid)}catch(_){}});const off=e=>{if(spid===null||!e||e.pointerId===spid){send(' ','keyup');spid=null;special.classList.remove('on')}};special.addEventListener('pointerup',off);special.addEventListener('pointercancel',off);special.addEventListener('lostpointercapture',()=>off(null))}else special.addEventListener('pointerdown',e=>{e.preventDefault();e.stopPropagation();tap(' ');special.classList.add('on');setTimeout(()=>special.classList.remove('on'),100)});
+ addEventListener('pagehide',()=>{release();send(' ','keyup')});document.addEventListener('contextmenu',e=>e.preventDefault());
+})();
+</script>
+</body>
+</html>
