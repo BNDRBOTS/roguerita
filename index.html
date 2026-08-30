@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>ROGUE RITA™ // ARCADE DIVISION — games that respect you enough to kill you</title>
 <style>
   :root {
@@ -428,7 +428,8 @@
   @media (max-width: 720px) {
     .nav-links { display: none; }
     .logo span { display: none; }
-    .nav-inner { padding: 12px 16px; }
+    nav { padding-top: env(safe-area-inset-top, 0px); }
+    .nav-inner { padding: 12px max(16px, env(safe-area-inset-right, 0px)) 12px max(16px, env(safe-area-inset-left, 0px)); }
     .nav-cta { padding: 15px 16px; font-size: 0.76rem; }
     header { padding: 70px 0 90px; }
     section { padding: 64px 0; }
@@ -489,7 +490,7 @@
         <span class="game-tag">THE ORIGINAL · SILENT CUT</span>
         <h3>VAPORWAVE V1</h3>
         <div class="sub">"THE TAPE"</div>
-        <p>The quiet one. A neon grid, a gradient sun, and ten named waves of geometry that have decided you're the problem. No music. Your heartbeat is the soundtrack.</p>
+        <p>The quiet one. A neon grid, a gradient sun, and ten named waves of geometry that have decided you're the problem. A lo-fi tape-deck synthwave loop rides under the neon. Your heartbeat can still keep time.</p>
         <ul class="feat-list">
           <li>5 enemy archetypes — drones, lunging darts, armored tanks, spiteful splitters</li>
           <li>Combo multipliers that abandon you the second you slow down</li>
@@ -557,7 +558,7 @@
         <p>Every sound is generated live by an actual audio graph — oscillators, filters, noise buffers. Zero MP3s were harmed. Zero MP3s were even invited.</p>
       </div>
       <div class="feature">
-        <div class="ico">��️</div>
+        <div class="ico">✍️</div>
         <h4>HAND-JITTERED EVERYTHING</h4>
         <p>Every circle is drawn slightly wrong on purpose, every frame. It's called a design language. Ours just happens to have a tremor.</p>
       </div>
@@ -688,8 +689,8 @@
       <p>Circles are prey, squares are furniture, triangles are villains. Five sides is exactly enough edges to mean business without joining the enemy team. This is settled geometry.</p>
     </details>
     <details>
-      <summary>Why doesn't V1 or the Boss Pack have music?</summary>
-      <p>V1 is the quiet one — the silence is load-bearing. The Boss Pack is ink; ink doesn't need a soundtrack. If you want the band, v2 has an entire generative engine that only plays for winners. Go be a winner.</p>
+      <summary>Why does each game sound different?</summary>
+      <p>V1 runs a lo-fi tape-deck synthwave loop, v2 uses a generative combo-driven band, and the Boss Pack uses a phase-driven industrial war drone. Each soundtrack follows its own game mechanic.</p>
     </details>
     <details>
       <summary>Do my scores sync to the cloud?</summary>
